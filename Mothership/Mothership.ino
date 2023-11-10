@@ -41,7 +41,7 @@ float R2 = 10000;
 int value = 0;
 double voltage;
 
-// initiate radio data transfer
+// initiate radio data receiver
 RF24 radio(7,8); 
 const byte address[][6] = {"3rr0r","Error"};  
 int Received_array[5];
