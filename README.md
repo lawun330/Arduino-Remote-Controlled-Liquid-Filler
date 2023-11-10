@@ -2,8 +2,8 @@
 These are from the big projects of our organization LORA during the first wave COVID era. Our team created a four-wheel vehicle. The aim was to spray and refill chemical disinfectants without humans in important areas.
 
 The project involves two parts
-- car
-- remote
+- Car (Mothership)
+- Remote
 
 The car, capable of carrying heavy weight, is controlled by the remote through radio waves. The remote has an LCD, a few LEDs, buttons, and a joystick.
 
