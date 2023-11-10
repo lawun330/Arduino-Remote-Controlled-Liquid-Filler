@@ -1,2 +1,15 @@
 # Remote-Controlled-Water-Filler
-The big project during the first wave COVID era.
+These are from the big projects of our organization LORA during the first wave COVID era. Our team created a four-wheel vehicle. The aim was to spray and refill chemical disinfectants without humans in important areas.
+
+The project involves two parts
+- car
+- remote
+
+The car, capable of carrying heavy weight, is controlled by the remote through radio waves. The remote has an LCD, a few LEDs, buttons, and a joystick.
+
+The code encloses 
+- Data transmission and receiving through radio modules
+- Displaying interactions with LCD
+- Getting the LIPO battery percentage to know when to recharge
+- Driving the car with acceleratable speed
+- DC motor control to initiate or stop filling liquid
