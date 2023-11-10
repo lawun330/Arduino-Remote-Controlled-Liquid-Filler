@@ -1,10 +1,12 @@
+// import libraries
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd(0x38,16,2); //lcd
+// initiate pins and values for lcd display
+LiquidCrystal_I2C lcd(0x38,16,2); 
 int row=0;
 int col=0;
 byte Square[8] = 
@@ -19,55 +21,60 @@ byte Square[8] =
   0b11111  
 };
 
-int x_axis,y_axis,x_val,y_val;  //joystick and controls 
+// declare variables for joystick controls
+int x_axis,y_axis,x_val,y_val;   
 int button_Joy_val,button_L_val,button_R_val;  
 
-double voltage; //battery
+// initiate variables for battery indicator circuit
+double voltage; 
 double original_volt=10.4;
 int percent;
 
-RF24 radio(7,8); //radio
+// initiate variables for radio data transmission
+RF24 radio(7,8); 
 const byte address[][6] = {"3rr0r","Error"};  
 int Array[5];
 
-int led=3; //pins
+// define pins
+int led=3; 
 int x=A2;
 int y=A3;
 int butt_joy=2;
 int buttonL=6;
 int buttonR=4;
 
-const int x_normal=5;//modify constant
+// modify these constants
+const int x_normal=5;  
 const int y_normal=4;
+const int range_constant=20;
 
+// one time code
 void setup()
 {
   Serial.begin(9600);
-  radio_transmit();
-  i2cLCD();
-  
-  pinMode(y,INPUT);
+  radioInitiateTransmitter();
+  startLCD();
   pinMode(x,INPUT);
+  pinMode(y,INPUT);
   pinMode(butt_joy,INPUT_PULLUP);
   pinMode(buttonL,INPUT_PULLUP);
   pinMode(buttonR,INPUT_PULLUP);
   pinMode(led,OUTPUT);
-  
 }
 
+// loop code
 void loop()
 {
-  joystick_input();
-  buttons();
-  lcd_joystick();
-  radioSend();
-  radioListen();
+  getJoystick();
+  getButtons();
+  displayLCD();
+  sendJoystickButtons();
+  radioListenVolt();
 }
 
-
-
 ////////////////////
-void radio_transmit()
+// a function to prepare radio data transmission through a radio module
+void radioInitiateTransmitter()
 {
   radio.begin();
   radio.openWritingPipe(address[0]);
@@ -76,33 +83,34 @@ void radio_transmit()
   radio.stopListening();
 }
 /////////////////////
-void i2cLCD()
+// a function to display initial messages on LCD
+void startLCD()
 {
   lcd.init();
   lcd.backlight();
-  lcd.createChar(1,Square);   //create customization
+  lcd.createChar(1,Square);  //create customization
   lcd.home();
   lcd.print("Initialized...");
-  for (int i=0; i<16 ;i++) //loading block style
+  for (int i=0; i<16 ;i++)  //loading block style
   {   
     lcd.setCursor(col,1);      
     lcd.write((byte)1);        
     delay(100);                
     col++;                     
   }
-  delay(125);              // 2s for 16 squares
-
+  delay(125);  // 2s for 16 squares
   lcd.clear();
 }
 /////////////////////
-void joystick_input()
+// a function for joystick data to be transmitted
+void getJoystick()
 {     
   x_axis=analogRead(x);
   y_axis=analogRead(y);
   button_Joy_val=!digitalRead(butt_joy);
   x_val=map(x_axis,0,1023,0,10);
   y_val=map(y_axis,0,1023,0,10);
-  Serial.print(x_val); //x=5,y=4 at normal value
+  Serial.print(x_val); //x=5, y=4 at normal value
   Serial.print("\t");
   Serial.print(y_val);
   Serial.print("\t");
@@ -110,7 +118,8 @@ void joystick_input()
   Serial.print("\t");
 }
 /////////////////////
-void buttons()
+// a function to store and show button states
+void getButtons()
 {
   button_L_val=!digitalRead(buttonL);
   button_R_val=!digitalRead(buttonR);
@@ -119,7 +128,8 @@ void buttons()
   Serial.println(button_R_val);
 }
 ////////////////////
-void lcd_joystick()
+// a function to display joystick data on LCD
+void displayLCD()
 {
       if(x_val==x_normal and y_val==y_normal and button_Joy_val==0 and button_L_val==0 and button_R_val==0) 
       {
@@ -135,10 +145,10 @@ void lcd_joystick()
       else if (x_val<x_normal and y_val==y_normal and button_Joy_val==0 and button_L_val==0 and button_R_val==0)  {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR - LEFT      ");}
       else if (x_val>x_normal and y_val==y_normal and button_Joy_val==0 and button_L_val==0 and button_R_val==0)  {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR - RIGHT     ");}  
 
-      else if (x_axis>x_normal+2 and y_axis>y_normal+2 and button_Joy_val==0 and button_L_val==0 and button_R_val==0) {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR - F_RIGHT   ");}
-      else if (x_axis<x_normal-2 and y_axis>y_normal+2 and button_Joy_val==0 and button_L_val==0 and button_R_val==0) {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR - F_LEFT    ");}
-      else if (x_axis<x_normal-2 and y_axis<y_normal-2 and button_Joy_val==0 and button_L_val==0 and button_R_val==0) {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR - B_LEFT    ");}
-      else if (x_axis>x_normal+2 and y_axis<y_normal-2 and button_Joy_val==0 and button_L_val==0 and button_R_val==0) {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR _ B_RIGHT   ");}
+      else if (x_axis>x_normal+range_constant and y_axis>y_normal+range_constant and button_Joy_val==0 and button_L_val==0 and button_R_val==0) {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR - F_RIGHT   ");}
+      else if (x_axis<x_normal-range_constant and y_axis>y_normal+range_constant and button_Joy_val==0 and button_L_val==0 and button_R_val==0) {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR - F_LEFT    ");}
+      else if (x_axis<x_normal-range_constant and y_axis<y_normal-range_constant and button_Joy_val==0 and button_L_val==0 and button_R_val==0) {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR - B_LEFT    ");}
+      else if (x_axis>x_normal+range_constant and y_axis<y_normal-range_constant and button_Joy_val==0 and button_L_val==0 and button_R_val==0) {lcd.setCursor(0,0); lcd.print("Drive Mode      "); lcd.setCursor(0,1); lcd.print("DIR _ B_RIGHT   ");}
         
        
       else if (x_val==x_normal and y_val==y_normal and button_Joy_val==1 and button_L_val==0 and button_R_val==0)
@@ -160,10 +170,10 @@ void lcd_joystick()
 
       else if (x_val==x_normal and y_val==y_normal and button_Joy_val==0 and button_L_val==1 and button_R_val==0){lcd.setCursor(0,0); lcd.print("Refilling Left   "); lcd.setCursor(0,1); lcd.print("                ");}
       else if (x_val==x_normal and y_val==y_normal and button_Joy_val==0 and button_L_val==0 and button_R_val==1){lcd.setCursor(0,0); lcd.print("Refilling Right  "); lcd.setCursor(0,1); lcd.print("                ");}
-      
 }
 /////////////////////
-void radioSend()
+// a function to transmit data
+void sendJoystickButtons()
 { 
   radio.stopListening();
   Array[0]=x_val;
@@ -175,14 +185,16 @@ void radioSend()
   delay(40);
 }
 ////////////////////
-void radioListen()
+// a function to receive data about voltage
+void radioListenVolt()
 {
   radio.startListening();
   if(radio.available()){radio.read(&voltage,sizeof(voltage));}
-  volt_percent();
+  voltPercent();
 }
 ///////////////////
-void volt_percent()
+// a function to calculate voltage percent
+void voltPercent()
 {
   percent=(voltage/original_volt)*100;
 }
