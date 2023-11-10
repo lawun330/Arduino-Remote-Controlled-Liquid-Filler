@@ -12,4 +12,4 @@ The code encloses
 - Displaying interactions with LCD
 - Getting the LIPO battery percentage to know when to recharge
 - Driving the car with acceleratable speed
-- DC motor control to initiate or stop filling liquid
+- DC control for dispenser to start or stop filling liquid
