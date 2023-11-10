@@ -61,14 +61,15 @@ unsigned long debounceDelay=50;
 int button_state;
 int button_last=LOW;
 
-const int x_normal=50; //modifiable constant
+// modify these constants
+const int x_normal=50; 
 const int y_normal=49;
 
 // one time code
 void setup()
 {
   Serial.begin(9600);
-  radioReceived();
+  radioInitiateReceiver();
   pinMode(EN1_PIN,OUTPUT);
   pinMode(EN2_PIN,OUTPUT);
   pinMode(analogInput,INPUT);
@@ -91,12 +92,12 @@ void setup()
 // loop code
 void loop()
 {
-  joystickInput();
-  data=keys();
-  Speed();
-//  print_val();
+  radioListenJoystick();
+  data=getKey();
+  setSpeed();
+//  printVals();
   carResponse(data);
-  refill();
+  toggleRefill();
 }
 
 ///////////////////////
@@ -219,7 +220,7 @@ void mainSpeed(int val)
 }
 ////////////////////////
 // a function for acceleration
-void Speed()
+void setSpeed()
 { 
   if (x_axis==9) x_axis=10;
   if (y_axis==9) y_axis=10;
@@ -230,7 +231,7 @@ void Speed()
 }
 ////////////////////////
 // a function to listen radio commands
-void radioReceived()
+void radioInitiateReceiver()
 {
   radio.begin();
   radio.openReadingPipe(1,address[0]);
@@ -240,7 +241,7 @@ void radioReceived()
 }
 ///////////////////////
 // a function for joystick data transmitted from the remote
-void joystickInput()
+void radioListenJoystick()
 {
   radio.startListening();
   if (radio.available())
@@ -256,7 +257,7 @@ void joystickInput()
 }
 ///////////////////////
 // a function to make distinct commands for each combination of inputs
-char keys()
+char getKey()
 {
   if      (x_axis==x_normal and y_axis==y_normal and button_joy==0 and button_L==0 and button_R==0) {return 's';}
   else if (x_axis==x_normal and y_axis>y_normal and button_joy==0 and button_L==0 and button_R==0)  {return 'F';}
@@ -269,11 +270,11 @@ char keys()
   else if (x_axis<x_normal and y_axis<y_normal and button_joy==0 and button_L==0 and button_R==0)   {return '3';}
   else if (x_axis>x_normal and y_axis<y_normal and button_joy==0 and button_L==0 and button_R==0)   {return '4';}  
 
-  else if (x_axis==x_normal and y_axis==y_normal and button_joy==1 and button_L==0 and button_R==0){sendVoltageData(); return 's';}
+  else if (x_axis==x_normal and y_axis==y_normal and button_joy==1 and button_L==0 and button_R==0){sendVolt(); return 's';}
 }
 //////////////////////
 // a function to calculate battery voltage for battery indicator circuit
-float battery()
+float getVolt()
 {
   value = analogRead(analogInput);
   vout = (value * 5.0) / 1024;
@@ -282,9 +283,9 @@ float battery()
 }
 //////////////////////
 // a function to send data about battery
-void sendVoltageData()
+void sendVolt()
 {
-      voltage=battery();
+      voltage=getVolt();
       Serial.print("Sending:");
       Serial.println(voltage);
       radio.stopListening();
@@ -292,7 +293,7 @@ void sendVoltageData()
 }
 //////////////////////
 // a function to control the dispenser to start and stop filling liquid with a button input
-void refill()
+void toggleRefill()
 {
   if (button_L!=button_last){lastDebounceTime=millis();}
   if ((millis()-lastDebounceTime) > debounceDelay)
@@ -308,7 +309,7 @@ void refill()
 }
 //////////////////////
 // a function to print values in serial window to check conditions
-void print_val()
+void printVals()
 { 
   Serial.print(x_axis);
   Serial.print("\t");
