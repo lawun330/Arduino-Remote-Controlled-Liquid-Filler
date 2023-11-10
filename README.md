@@ -10,6 +10,6 @@ The car, capable of carrying heavy weight, is controlled by the remote through r
 The code encloses 
 - Data transmission and receiving through radio modules
 - Displaying interactions with LCD
-- Getting the LIPO battery percentage to know when to recharge
-- Driving the car with acceleratable speed
+- Getting the LIPO battery info to know when to recharge
+- Driving the car with shifting speeds
 - DC control for dispenser to start or stop filling liquid
