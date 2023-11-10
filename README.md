@@ -1,5 +1,5 @@
 # Remote-Controlled-Water-Filler
-These are from the big projects of our organization LORA during the first wave COVID era. Our team created a four-wheel vehicle. The aim was to spray and refill chemical disinfectants without humans in important areas.
+These are from the big projects of our organization LORA during the first wave COVID era. Our team created a four-wheel vehicle. The aim was to spray and refill chemical disinfectants (with a dispenser) without humans in important areas.
 
 The project involves two parts
 - Car (Mothership)
