@@ -1,4 +1,4 @@
-# Remote-Controlled-Water-Filler
+# Remote-Controlled-Liquid-Filler
 It was one of the successful projects displayed on BBC Burmese <code>https://youtu.be/Vs6lDYDOak4?si=wyd7MCIrcl4F-ZTM</code>. The project was launched during the first wave of COVID-19 in 2020 by a school organization, "The Laboratory Of Robotics and Artificial Intelligence (LORA)", located at Yangon Technological University. 
 
 Our goal was to create a four-wheel vehicle to carry chemical disinfectants and refill sprayer vehicle(s) with a dispenser. We hoped such an invention would help health workers to access infected areas remotely. The project was called "Refiller Robot". It had two main parts:
