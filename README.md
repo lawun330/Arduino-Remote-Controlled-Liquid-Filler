@@ -1,11 +1,11 @@
 # Remote-Controlled-Water-Filler
-These are from the big projects of our organization LORA during the first wave COVID era. Our team created a four-wheel vehicle. The aim was to spray and refill chemical disinfectants (with a dispenser) without humans in important areas.
+It was one of the successful projects displayed on BBC Burmese <code>https://youtu.be/Vs6lDYDOak4?si=wyd7MCIrcl4F-ZTM)</code>. The project was launched during the first wave of COVID-19 in 2020 by a school organization, "The Laboratory Of Robotics and Artificial Intelligence (LORA)", located at Yangon Technological University. Our goal was to create a four-wheel vehicle to carry chemical disinfectants and refill sprayer vehicle(s) with a dispenser. We hoped such an invention would help health workers to access infected areas remotely.
 
-The project involves two parts
-- Car (Mothership)
-- Remote
+The project has two parts
+1. Car (Mothership)
+2. Remote
 
-The car, capable of carrying heavy weight, is controlled by the remote through radio waves. The remote has an LCD, a few LEDs, buttons, and a joystick.
+The car is capable of carrying heavy weight. Its frames are made with acrylic and custom 3D printing designs. It is controlled by the custom remote through radio waves. The remote has an LCD, LEDs, buttons, and a joystick.
 
 The code encloses 
 - Data transmission and receiving through radio modules
